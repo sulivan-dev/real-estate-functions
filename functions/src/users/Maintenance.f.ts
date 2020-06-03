@@ -3,6 +3,7 @@ import * as cors from 'cors'
 import * as express from 'express'
 import * as admin from 'firebase-admin'
 import * as cookieParser from "cookie-parser"
+import { validateIfExistToken } from "../security/validateSession";
 
 if (! admin.apps.length) {
   admin.initializeApp();
@@ -14,6 +15,9 @@ const corsValue = cors({ origin: true })
 endPointExpress.options('*', corsValue)
 endPointExpress.use(corsValue)
 endPointExpress.use(cookieParser())
+
+const roles = ['admin', 'operator'];
+endPointExpress.use(validateIfExistToken(roles));
 
 endPointExpress.post('*', async (request: any, response: any) => {
   try {
