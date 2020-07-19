@@ -1,8 +1,10 @@
-import * as functions from 'firebase-functions';
+import * as glob from 'glob';
+import * as camelCase from 'camelcase';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+const files = glob.sync('./**/*.f.js', { cwd: __dirname, ignore: './node_modules/**' });
+
+for (let f = 0, f1 = files.length; f < f1; f++) {
+ const file = files[f];
+ const functionName = camelCase(file.slice(0, -5).split('/').join('_'));
+ exports[functionName] = require(file);
+}
